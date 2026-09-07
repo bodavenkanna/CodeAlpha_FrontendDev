@@ -1,0 +1,8 @@
+const display=document.querySelector("#display"),history=document.querySelector("#history");let expression="";let justCalculated=false;
+function render(){display.value=expression||"0"}
+function add(value){if(justCalculated&&!/[+\-*/%]/.test(value))expression="";justCalculated=false;if(value==="."&&(/(^|[+\-*/%])[^+\-*/%]*\.$/.test(expression)))return;if(/[+\-*/%]/.test(value)&&/[+\-*/%]$/.test(expression)){expression=expression.slice(0,-1)}expression+=value;render()}
+function clearAll(){expression="";history.textContent="";justCalculated=false;render()}
+function del(){expression=expression.slice(0,-1);render()}
+function calculate(){if(!expression)return;try{if(!/[0-9]$/.test(expression))return;const safe=expression.replace(/%/g,"/100");const result=Function('"use strict";return ('+safe+')')();if(!Number.isFinite(result))throw Error();history.textContent=expression+" =";expression=String(Math.round(result*1e12)/1e12);justCalculated=true;render()}catch{display.value="Error";expression=""}}
+document.querySelector(".keys").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;b.dataset.value?add(b.dataset.value):b.dataset.action==="clear"?clearAll():b.dataset.action==="delete"?del():calculate()});
+document.addEventListener("keydown",e=>{if(/[0-9.+\-*/%]/.test(e.key)){e.preventDefault();add(e.key)}else if(e.key==="Enter"||e.key==="="){e.preventDefault();calculate()}else if(e.key==="Backspace")del();else if(e.key==="Escape")clearAll()});render();
