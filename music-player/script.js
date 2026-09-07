@@ -1,0 +1,14 @@
+const songs=[
+{title:"Night Drive",artist:"Audio Library",src:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",cover:"https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=80"},
+{title:"Dreamscape",artist:"Audio Library",src:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",cover:"https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=700&q=80"},
+{title:"Ocean Waves",artist:"Audio Library",src:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",cover:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=700&q=80"}
+];
+const audio=document.querySelector("#audio"),cover=document.querySelector("#cover"),title=document.querySelector("#title"),artist=document.querySelector("#artist"),progress=document.querySelector("#progress"),current=document.querySelector("#current"),duration=document.querySelector("#duration"),play=document.querySelector("#play"),playlist=document.querySelector("#playlist");let currentIndex=0;
+function time(s){if(!Number.isFinite(s))return"0:00";return Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0")}
+function load(i,autoplay=false){currentIndex=(i+songs.length)%songs.length;const s=songs[currentIndex];audio.src=s.src;cover.src=s.cover;title.textContent=s.title;artist.textContent=s.artist;renderPlaylist();if(autoplay)audio.play().catch(()=>{});else play.textContent="▶"}
+function renderPlaylist(){playlist.innerHTML=songs.map((s,i)=>`<div class="track ${i===currentIndex?"active":""}" data-index="${i}"><img src="${s.cover}" alt=""><div class="track-info"><div class="track-title">${s.title}</div><div class="track-artist">${s.artist}</div></div></div>`).join("")}
+play.onclick=()=>audio.paused?audio.play():audio.pause();document.querySelector("#prev").onclick=()=>load(currentIndex-1,true);document.querySelector("#next").onclick=()=>load(currentIndex+1,true);
+audio.addEventListener("play",()=>play.textContent="❚❚");audio.addEventListener("pause",()=>play.textContent="▶");audio.addEventListener("loadedmetadata",()=>{duration.textContent=time(audio.duration);progress.value=0});
+audio.addEventListener("timeupdate",()=>{current.textContent=time(audio.currentTime);progress.value=audio.duration?(audio.currentTime/audio.duration)*100:0});
+progress.oninput=()=>{if(audio.duration)audio.currentTime=(progress.value/100)*audio.duration};document.querySelector("#volume").oninput=e=>audio.volume=e.target.value;
+audio.addEventListener("ended",()=>load(currentIndex+1,true));playlist.addEventListener("click",e=>{const t=e.target.closest(".track");if(t)load(+t.dataset.index,true)});audio.volume=.8;load(0);

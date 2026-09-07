@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JavaScript Music Player</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<main class="player">
+<div class="cover"><img id="cover" alt="Album cover"></div>
+<div class="meta"><p class="label">NOW PLAYING</p><h1 id="title">Loading...</h1><p id="artist"></p></div>
+<div class="progress"><span id="current">0:00</span><input id="progress" type="range" min="0" max="100" value="0"><span id="duration">0:00</span></div>
+<div class="controls"><button id="prev">⏮</button><button class="play" id="play">▶</button><button id="next">⏭</button></div>
+<div class="volume"><span>🔊</span><input id="volume" type="range" min="0" max="1" step=".01" value=".8"></div>
+<h2>Playlist</h2><div id="playlist"></div>
+<audio id="audio" preload="metadata"></audio>
+</main><script src="script.js"></script>
+</body></html>
